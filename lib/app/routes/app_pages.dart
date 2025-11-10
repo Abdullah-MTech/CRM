@@ -1,11 +1,20 @@
+import 'package:crmnir/app/modules/verify/views/success_view.dart';
 import 'package:get/get.dart';
 
+import '../modules/forget/bindings/forget_binding.dart';
+import '../modules/forget/views/forget_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/login/bindings/login_binding.dart';
+import '../modules/login/views/login_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
+import '../modules/signup/bindings/signup_binding.dart';
+import '../modules/signup/views/signup_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
+import '../modules/verify/bindings/verify_binding.dart';
+import '../modules/verify/views/verify_view.dart';
 
 part 'app_routes.dart';
 
@@ -29,6 +38,30 @@ class AppPages {
       name: _Paths.ONBOARDING,
       page: () => const OnboardingView(),
       binding: OnboardingBinding(),
+    ),
+    GetPage(
+      name: _Paths.LOGIN,
+      page: () => const LoginView(),
+      binding: LoginBinding(),
+    ),
+    GetPage(
+      name: _Paths.SIGNUP,
+      page: () => const SignupView(),
+      binding: SignupBinding(),
+    ),
+    GetPage(
+      name: _Paths.FORGET,
+      page: () => const ForgetView(),
+      binding: ForgetBinding(),
+    ),
+    GetPage(
+      name: _Paths.VERIFY,
+      page: () => const VerifyView(),
+      binding: VerifyBinding(),
+    ),
+    GetPage(
+      name: _Paths.SUCCESS,
+      page: () => const SuccessView(),
     ),
   ];
 }
