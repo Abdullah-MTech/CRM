@@ -297,7 +297,7 @@ class _FinancialSection extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Total', style: labelStyle),
-                  Text('250.00', style: valueStyle),
+                  Text('\$250.00', style: valueStyle),
                 ],
               ),
               SizedBox(height: 4 * s),
@@ -305,7 +305,7 @@ class _FinancialSection extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Parts', style: labelStyle),
-                  Text('100.00', style: valueStyle),
+                  Text('\$100.00', style: valueStyle),
                 ],
               ),
               SizedBox(height: 4 * s),
@@ -313,7 +313,7 @@ class _FinancialSection extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Profit', style: labelStyle),
-                  Text('150.00', style: valueStyle),
+                  Text('\$150.00', style: valueStyle),
                 ],
               ),
             ],

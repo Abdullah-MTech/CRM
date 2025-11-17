@@ -15,8 +15,8 @@ class SuccessView extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppColors.primary.withValues(alpha: 0.85),
-              AppColors.primary.withValues(alpha: 0.15),
+              AppColors.primary.withOpacity(0.85),
+              AppColors.primary.withOpacity(0.15),
               Colors.white,
             ],
             stops: const [0.0, 0.55, 0.9],
