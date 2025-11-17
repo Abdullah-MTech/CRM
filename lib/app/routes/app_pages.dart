@@ -1,10 +1,17 @@
-import 'package:crmnir/app/modules/verify/views/success_view.dart';
 import 'package:get/get.dart';
 
+import '../modules/calls/bindings/calls_binding.dart';
+import '../modules/calls/views/calls_view.dart';
 import '../modules/forget/bindings/forget_binding.dart';
 import '../modules/forget/views/forget_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/lead/bindings/lead_binding.dart';
+import '../modules/lead/views/lead_view.dart';
+import '../modules/leadS/bindings/lead_s_binding.dart';
+import '../modules/leadS/views/lead_s_view.dart';
+import '../modules/leaddetails/bindings/leaddetails_binding.dart';
+import '../modules/leaddetails/views/leaddetails_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
@@ -14,6 +21,7 @@ import '../modules/signup/views/signup_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 import '../modules/verify/bindings/verify_binding.dart';
+import '../modules/verify/views/success_view.dart';
 import '../modules/verify/views/verify_view.dart';
 
 part 'app_routes.dart';
@@ -62,6 +70,26 @@ class AppPages {
     GetPage(
       name: _Paths.SUCCESS,
       page: () => const SuccessView(),
+    ),
+    GetPage(
+      name: _Paths.CALLS,
+      page: () => const CallsView(),
+      binding: CallsBinding(),
+    ),
+    GetPage(
+      name: _Paths.LEAD,
+      page: () => const LeadView(),
+      binding: LeadBinding(),
+    ),
+    GetPage(
+      name: _Paths.LEAD_S,
+      page: () => const LeadSView(),
+      binding: LeadSBinding(),
+    ),
+    GetPage(
+      name: _Paths.LEADDETAILS,
+      page: () => const LeaddetailsView(),
+      binding: LeaddetailsBinding(),
     ),
   ];
 }

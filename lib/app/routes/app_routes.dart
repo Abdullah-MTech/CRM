@@ -11,6 +11,10 @@ abstract class Routes {
   static const FORGET = _Paths.FORGET;
   static const VERIFY = _Paths.VERIFY;
   static const SUCCESS = _Paths.SUCCESS;
+  static const CALLS = _Paths.CALLS;
+  static const LEAD = _Paths.LEAD;
+  static const LEAD_S = _Paths.LEAD_S;
+  static const LEADDETAILS = _Paths.LEADDETAILS;
 }
 
 abstract class _Paths {
@@ -23,4 +27,8 @@ abstract class _Paths {
   static const FORGET = '/forget';
   static const VERIFY = '/verify';
   static const SUCCESS = '/success';
+  static const CALLS = '/calls';
+  static const LEAD = '/lead';
+  static const LEAD_S = '/lead-s';
+  static const LEADDETAILS = '/leaddetails';
 }

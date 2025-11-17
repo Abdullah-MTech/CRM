@@ -32,6 +32,7 @@ class LoginController extends GetxController {
 
   void submit() {
     // if (formKey.currentState?.validate() != true) return;
+    Get.toNamed(Routes.HOME);
      
   }
 
