@@ -16,6 +16,7 @@ abstract class Routes {
   static const LEAD_S = _Paths.LEAD_S;
   static const LEADDETAILS = _Paths.LEADDETAILS;
   static const BOTTOMNAV = _Paths.BOTTOMNAV;
+  static const RECENT = _Paths.RECENT;
 }
 
 abstract class _Paths {
@@ -33,4 +34,5 @@ abstract class _Paths {
   static const LEAD_S = '/lead-s';
   static const LEADDETAILS = '/leaddetails';
   static const BOTTOMNAV = '/bottomnav';
+  static const RECENT = '/recent';
 }
