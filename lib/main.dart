@@ -1,52 +1,63 @@
 import 'dart:io';
 
+import 'package:crmnir/Services/TwilioCallService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'app/routes/app_pages.dart';
 
-
 Future<void> initializeApp() async {
+  // If you really need a custom HttpClient, set it up here.
   final HttpClient httpClient = HttpClient();
+  // Example if you want to override the global client later:
+  // HttpOverrides.global = MyHttpOverrides(httpClient);
+
+  // Initialize Twilio once at startup
+  await TwilioCallService.instance.ensureInitialized();
 }
 
-
 void main() async {
-  await WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
+
   await initializeApp();
-  SystemChrome.setPreferredOrientations([
+
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonData = prefs.getString('userrecord') ?? '';
-    bool isLogin = jsonData.isNotEmpty;
-    String initialRoute;
-    if (isLogin) {
-      initialRoute = Routes.BOTTOMNAV;
-    } else {
-      initialRoute = Routes.LOGIN;
-    }
- 
-  runApp( MyApp(
-    initialRoutes: initialRoute,
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final String jsonData = prefs.getString('userrecord') ?? '';
+  final bool isLogin = jsonData.isNotEmpty;
+
+  final String initialRoute =
+      isLogin ? Routes.BOTTOMNAV : Routes.LOGIN;
+
+  runApp(MyApp(
+    initialRoute: initialRoute,
   ));
 }
 
-
 class MyApp extends StatelessWidget {
-   MyApp({super.key, initialRoute, required this.initialRoutes});
-  final String? initialRoutes;
+  const MyApp({
+    super.key,
+    required this.initialRoute,
+  });
+
+  final String initialRoute;
+
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(0.75)),
+      data: MediaQuery.of(context).copyWith(
+        textScaler: const TextScaler.linear(0.75),
+      ),
       child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        title: "CRM",
-        initialRoute: initialRoutes,
+        title: 'CRM',
+        initialRoute: initialRoute,
         getPages: AppPages.routes,
       ),
     );

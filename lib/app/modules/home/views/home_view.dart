@@ -5,6 +5,7 @@ import 'package:crmnir/utilities/Colors.dart';
 
 import '../controllers/home_controller.dart';
 
+
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
 
@@ -16,7 +17,7 @@ class HomeView extends GetView<HomeController> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: AppColors.bcolor,
-      appBar: PreferredSize(
+      appBar:  PreferredSize(
         preferredSize: Size.fromHeight(0),
         child: AppBar(
           backgroundColor: AppColors.primary,
@@ -25,7 +26,7 @@ class HomeView extends GetView<HomeController> {
           toolbarHeight: 0,
         ),
       ),
-      drawer: _Drawer(),
+      drawer: const _Drawer(),
       body: SafeArea(
         child: Column(
           children: [
@@ -41,7 +42,12 @@ class HomeView extends GetView<HomeController> {
                     _SearchField(controller: c),
                     const SizedBox(height: 20),
                     const Divider(height: 22),
-                    const SizedBox(height: 16),
+
+                    // NEW: dialed number display just under the divider
+                    const SizedBox(height: 12),
+                    _DialedNumberDisplay(controller: c),
+                    const SizedBox(height: 12),
+
                     _DialPad(controller: c),
                     const SizedBox(height: 24),
                     _CallButton(controller: c),
@@ -53,8 +59,48 @@ class HomeView extends GetView<HomeController> {
         ),
       ),
     );
+  }}
+
+class _DialedNumberDisplay extends StatelessWidget {
+  const _DialedNumberDisplay({required this.controller});
+
+  final HomeController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      final value = controller.dialedNumber.value;
+
+      return Row(
+        children: [
+          Expanded(
+            child: Text(
+              value.isEmpty ? '' : value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+                color: AppColors.blackColor,
+              ),
+            ),
+          ),
+          if (value.isNotEmpty) ...[
+            IconButton(
+              icon: const Icon(Icons.backspace, size: 20),
+              onPressed: controller.removeLastDigit,
+            ),
+            IconButton(
+              icon: const Icon(Icons.close, size: 20),
+              onPressed: controller.clearDialer,
+            ),
+          ],
+        ],
+      );
+    });
   }
 }
+
 
 class _HeaderWithCallerId extends StatelessWidget {
   const _HeaderWithCallerId({
@@ -68,7 +114,6 @@ class _HeaderWithCallerId extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     const double headerHeight = 160;
 
     return SizedBox(
@@ -81,10 +126,6 @@ class _HeaderWithCallerId extends StatelessWidget {
               height: headerHeight,
               decoration: const BoxDecoration(
                 color: AppColors.primary,
-                // borderRadius: BorderRadius.only(
-                //   bottomLeft: Radius.circular(22),
-                //   bottomRight: Radius.circular(22),
-                // ),
               ),
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
               child: Column(
@@ -92,14 +133,12 @@ class _HeaderWithCallerId extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      GestureDetector(
-                        child: IconButton(
-                          icon: Icon(Icons.sort),
-                          color: Colors.white,
-                          onPressed: () {
-                            scaffoldKey.currentState?.openDrawer();
-                          },
-                        ),
+                      IconButton(
+                        icon: const Icon(Icons.sort),
+                        color: Colors.white,
+                        onPressed: () {
+                          scaffoldKey.currentState?.openDrawer();
+                        },
                       ),
                       const SizedBox(width: 12),
                       const Text(
@@ -135,7 +174,6 @@ class _HeaderWithCallerId extends StatelessWidget {
                                 size: 28,
                                 color: AppColors.whiteColor,
                               ),
-
                               Positioned(
                                 top: -1,
                                 right: -1,
@@ -145,10 +183,6 @@ class _HeaderWithCallerId extends StatelessWidget {
                                   decoration: BoxDecoration(
                                     color: Colors.redAccent,
                                     borderRadius: BorderRadius.circular(20),
-                                    // border: Border.all(
-                                    //   color: AppColors.whiteColor,
-                                    //   width: 1.5,
-                                    // ),
                                   ),
                                 ),
                               ),
@@ -164,7 +198,6 @@ class _HeaderWithCallerId extends StatelessWidget {
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.white,
                       fontSize: 14,
-
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -172,21 +205,19 @@ class _HeaderWithCallerId extends StatelessWidget {
               ),
             ),
           ),
+
+          // Caller ID card: now ONLY shows from-number, with dropdown support
           Positioned(
             left: 20,
             right: 20,
             bottom: 40,
             child: Obx(() {
-              final displayNumber =
-                  controller.dialedNumber.value.isNotEmpty
-                      ? controller.dialedNumber.value
-                      : controller.callerId.value;
+              final currentCallerId = controller.callerId.value;
+              final options = controller.availableCallerIds;
 
               return Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
-                ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
                   color: AppColors.whiteColor,
                   borderRadius: BorderRadius.circular(5),
@@ -201,14 +232,38 @@ class _HeaderWithCallerId extends StatelessWidget {
                 child: Row(
                   children: [
                     Expanded(
-                      child: Text(
-                        displayNumber,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: AppColors.blackColor,
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          isExpanded: true,
+                          value: options.contains(currentCallerId)
+                              ? currentCallerId
+                              : (options.isNotEmpty ? options.first : null),
+                          hint: const Text(
+                            'Select Caller ID',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.blackColor,
+                            ),
+                          ),
+                          items: options
+                              .map(
+                                (number) => DropdownMenuItem<String>(
+                                  value: number,
+                                  child: Text(
+                                    number,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.blackColor,
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: controller.selectCallerId,
                         ),
                       ),
                     ),
@@ -228,7 +283,6 @@ class _HeaderWithCallerId extends StatelessWidget {
     );
   }
 }
-
 class _NewActivitySection extends StatelessWidget {
   const _NewActivitySection({required this.controller});
 
