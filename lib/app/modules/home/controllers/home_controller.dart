@@ -30,8 +30,7 @@ class HomeController extends GetxController {
       callerId.value = availableCallerIds.first;
     }
 
-    // Initialize Twilio once at startup.
-    await _callService.ensureInitialized();
+
   }
 
   void selectActivityTab(int index) {

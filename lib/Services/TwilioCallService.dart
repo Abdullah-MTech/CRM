@@ -8,39 +8,41 @@ class TwilioCallService {
   String? _accessToken;
   bool _initialized = false;
 
-  // Hardcoded for now. Replace these with data from Laravel later.
-  static const String _testAccessToken = 'YOUR_TEST_TWILIO_ACCESS_TOKEN_HERE';
+  // Hardcode test token for now.
+  static const String _testAccessToken = 'YOUR_TEST_TWILIO_ACCESS_TOKEN';
 
+  // Hardcode from numbers for now.
   List<String> _fromNumbers = const [
     '+44 161 464 0360',
-    // Add more Twilio numbers here for local testing.
-    // '+44 20 1234 5678',
-    // '+1 555 123 4567',
+    // Add more later.
   ];
 
   List<String> get fromNumbers => List.unmodifiable(_fromNumbers);
 
-  /// Call this once at startup or lazily before the first call.
-  Future<void> ensureInitialized() async {
-    if (_initialized) return;
-
+  Future<void> _initInternal() async {
     _accessToken = _testAccessToken;
 
     if (_accessToken == null || _accessToken!.isEmpty) {
       throw Exception('Twilio access token is not configured.');
     }
 
-    // On iOS, deviceToken is handled automatically; accessToken is mandatory.
+    // This may log "Device token is nil" if VoIP is not fully configured.
+    // For outgoing-only you can ignore that log.
     await TwilioVoice.instance.setTokens(accessToken: _accessToken!);
 
     _initialized = true;
   }
 
-  /// Place an outbound call using Twilio.
+  Future<void> ensureInitialized() async {
+    if (_initialized) return;
+    await _initInternal();
+  }
+
   Future<void> placeCall({
     required String from,
     required String to,
   }) async {
+    // Lazy init: only when we actually place a call.
     await ensureInitialized();
 
     if (from.isEmpty || to.isEmpty) {
@@ -57,14 +59,12 @@ class TwilioCallService {
     );
   }
 
-  /// Example hook for when you wire Laravel later.
-  /// Call this with data from your API.
   void updateConfigFromBackend({
     required String accessToken,
     required List<String> fromNumbers,
   }) {
     _accessToken = accessToken;
     _fromNumbers = fromNumbers;
-    _initialized = false; // Force re-init with new token on next call.
+    _initialized = false;
   }
 }

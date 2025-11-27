@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:crmnir/Services/TwilioCallService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -9,19 +8,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app/routes/app_pages.dart';
 
 Future<void> initializeApp() async {
-  // If you really need a custom HttpClient, set it up here.
+  // If you want to keep HttpClient stuff, leave it here.
   final HttpClient httpClient = HttpClient();
-  // Example if you want to override the global client later:
-  // HttpOverrides.global = MyHttpOverrides(httpClient);
-
-  // Initialize Twilio once at startup
-  await TwilioCallService.instance.ensureInitialized();
+  // For now, nothing Twilio-related here.
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await initializeApp();
+  try {
+    await initializeApp();
+  } catch (e, st) {
+    // Don't let a startup error freeze the app.
+    debugPrint('initializeApp error: $e');
+    debugPrint('$st');
+  }
 
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -35,9 +36,7 @@ void main() async {
   final String initialRoute =
       isLogin ? Routes.BOTTOMNAV : Routes.LOGIN;
 
-  runApp(MyApp(
-    initialRoute: initialRoute,
-  ));
+  runApp(MyApp(initialRoute: initialRoute));
 }
 
 class MyApp extends StatelessWidget {
