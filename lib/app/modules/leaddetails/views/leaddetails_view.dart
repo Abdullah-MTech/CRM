@@ -1,4 +1,4 @@
-import 'package:crmnir/app/data/calls.dart';
+import 'package:crmnir/app/Models/calls.dart';
 import 'package:crmnir/utilities/Colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

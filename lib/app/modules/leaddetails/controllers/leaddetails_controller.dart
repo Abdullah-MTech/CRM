@@ -1,4 +1,4 @@
-import 'package:crmnir/app/data/calls.dart';
+import 'package:crmnir/app/Models/calls.dart';
 import 'package:get/get.dart';
 
 class LeaddetailsController extends GetxController {

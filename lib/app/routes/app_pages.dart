@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/bottomnav/bindings/bottomnav_binding.dart';
+import '../modules/bottomnav/views/bottomnav_view.dart';
 import '../modules/calls/bindings/calls_binding.dart';
 import '../modules/calls/views/calls_view.dart';
 import '../modules/forget/bindings/forget_binding.dart';
@@ -90,6 +92,11 @@ class AppPages {
       name: _Paths.LEADDETAILS,
       page: () => const LeaddetailsView(),
       binding: LeaddetailsBinding(),
+    ),
+    GetPage(
+      name: _Paths.BOTTOMNAV,
+      page: () => BottomnavView(),
+      binding: BottomnavBinding(),
     ),
   ];
 }

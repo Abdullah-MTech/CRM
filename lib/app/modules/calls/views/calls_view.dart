@@ -1,4 +1,4 @@
-import 'package:crmnir/app/data/calls.dart';
+import 'package:crmnir/app/Models/calls.dart';
 import 'package:crmnir/app/modules/calls/controllers/calls_controller.dart';
 import 'package:crmnir/utilities/Colors.dart';
 import 'package:flutter/material.dart';
@@ -19,15 +19,21 @@ class CallsView extends GetView<CallsController> {
     return Scaffold(
       backgroundColor: AppColors.bcolor,
       appBar: AppBar(
-        title: const Text('Call',style: TextStyle(fontSize: 22,fontWeight: FontWeight.bold),),
+        title: const Text(
+          'Call',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
         backgroundColor: AppColors.primary,
         foregroundColor: AppColors.whiteColor,
-        toolbarHeight:  120,
+        toolbarHeight: 120,
         shape: new RoundedRectangleBorder(
           borderRadius: new BorderRadius.vertical(
-              bottom: new Radius.elliptical(
-                  MediaQuery.of(context).size.width, 100.0)),
+            bottom: new Radius.elliptical(
+              MediaQuery.of(context).size.width,
+              100.0,
+            ),
+          ),
         ),
       ),
       body: SafeArea(
@@ -51,25 +57,70 @@ class CallsView extends GetView<CallsController> {
               ),
             ),
             // List
+            // List
             Expanded(
               child: Obx(() {
                 final items = controller.filteredCalls;
-                return ListView.builder(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 16 * scale(context), vertical: 8 * scale(context)),
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final model = items[index];
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: 12 * scale(context)),
-                      child: CallCard(
-                        model: model,
-                        scaleFactor: scale(context),
-                        onPlay: () => controller.playRecording(model),
-                        onCall: () => controller.callNumber(model.phone),
-                      ),
-                    );
-                  },
+                final isLoading = controller.isLoading.value;
+                final hasError = controller.hasError.value;
+
+                // RefreshIndicator always wraps a scrollable
+                return RefreshIndicator(
+                  onRefresh: controller.refreshCalls,
+                  child:
+                      items.isEmpty
+                          ? ListView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16 * scale(context),
+                              vertical: 32 * scale(context),
+                            ),
+                            children: [
+                              SizedBox(height: 12 * scale(context)),
+                              if (isLoading) ...[
+                                Center(child: CircularProgressIndicator()),
+                              ] else ...[
+                                Center(
+                                  child: Text(
+                                    hasError
+                                        ? 'Failed to load calls.\nPull down to try again.'
+                                        : controller.selectedTab.value == 0
+                                        ? 'No calls to show.'
+                                        : 'No missed calls.',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 14 * scale(context),
+                                      color: AppColors.greyColor,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          )
+                          : ListView.builder(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16 * scale(context),
+                              vertical: 8 * scale(context),
+                            ),
+                            itemCount: items.length,
+                            itemBuilder: (context, index) {
+                              final model = items[index];
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: 12 * scale(context),
+                                ),
+                                child: CallCard(
+                                  model: model,
+                                  scaleFactor: scale(context),
+                                  onPlay: () => controller.playRecording(model),
+                                  onCall:
+                                      () => controller.callNumber(model.phone),
+                                ),
+                              );
+                            },
+                          ),
                 );
               }),
             ),
@@ -77,9 +128,9 @@ class CallsView extends GetView<CallsController> {
         ),
       ),
     );
-  }}
+  }
+}
 
-  
 /// Segmented toggle (All / Missed)
 class _SegmentedTabs extends StatelessWidget {
   final double scaleFactor;
@@ -137,15 +188,16 @@ class _SegmentItem extends StatelessWidget {
           color: active ? AppColors.primary : AppColors.whiteColor,
           borderRadius: BorderRadius.circular(8 * scale),
           border: Border.all(color: AppColors.greyColor, width: 1),
-          boxShadow: active
-              ? [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.12),
-                    blurRadius: 8 * scale,
-                    offset: Offset(0, 2 * scale),
-                  )
-                ]
-              : null,
+          boxShadow:
+              active
+                  ? [
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.12),
+                      blurRadius: 8 * scale,
+                      offset: Offset(0, 2 * scale),
+                    ),
+                  ]
+                  : null,
         ),
         alignment: Alignment.center,
         child: Text(
@@ -195,7 +247,19 @@ class CallCard extends StatelessWidget {
 
   static String _monthShort(int m) {
     const names = [
-      '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      '',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return names[m];
   }
@@ -221,7 +285,9 @@ class CallCard extends StatelessWidget {
           // Top row (main content)
           Padding(
             padding: EdgeInsets.symmetric(
-                horizontal: 14 * scaleFactor, vertical: 12 * scaleFactor),
+              horizontal: 14 * scaleFactor,
+              vertical: 12 * scaleFactor,
+            ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -233,7 +299,11 @@ class CallCard extends StatelessWidget {
                     color: AppColors.primary,
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(Icons.person, color: AppColors.whiteColor, size: 26 * scaleFactor),
+                  child: Icon(
+                    Icons.person,
+                    color: AppColors.whiteColor,
+                    size: 26 * scaleFactor,
+                  ),
                 ),
                 SizedBox(width: 12 * scaleFactor),
                 // Texts
@@ -259,8 +329,11 @@ class CallCard extends StatelessWidget {
                           // call icon to the right
                           GestureDetector(
                             onTap: onCall,
-                            child: Icon(Icons.phone,
-                                color: AppColors.greyColor, size: 22 * scaleFactor),
+                            child: Icon(
+                              Icons.phone,
+                              color: AppColors.greyColor,
+                              size: 22 * scaleFactor,
+                            ),
                           ),
                         ],
                       ),
@@ -303,22 +376,27 @@ class CallCard extends StatelessWidget {
             ),
           ),
           // Divider and small bottom bar with play button
-          Divider(
-            height: 0.9,
-          ),
+          Divider(height: 0.9),
           Container(
-            
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 12 * scaleFactor, vertical: 8 * scaleFactor),
+              padding: EdgeInsets.symmetric(
+                horizontal: 12 * scaleFactor,
+                vertical: 8 * scaleFactor,
+              ),
               child: Row(
                 children: [
                   // small left status text (example)
                   Expanded(
                     child: Text(
-                      model.missed ? 'Call back via: ${model.line}' : '${model.line}  •  ${model.phone}',
+                      model.missed
+                          ? 'Call back via: ${model.line}'
+                          : '${model.line}  •  ${model.phone}',
                       style: TextStyle(
                         fontSize: 12 * scaleFactor,
-                        color: model.missed ? AppColors.errorColor : AppColors.darkGreyColor,
+                        color:
+                            model.missed
+                                ? AppColors.errorColor
+                                : AppColors.darkGreyColor,
                       ),
                     ),
                   ),
@@ -327,14 +405,20 @@ class CallCard extends StatelessWidget {
                     onTap: onPlay,
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                          horizontal: 10 * scaleFactor, vertical: 4 * scaleFactor),
+                        horizontal: 10 * scaleFactor,
+                        vertical: 4 * scaleFactor,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         borderRadius: BorderRadius.circular(3 * scaleFactor),
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.play_arrow, color: AppColors.whiteColor, size: 16 * scaleFactor),
+                          Icon(
+                            Icons.play_arrow,
+                            color: AppColors.whiteColor,
+                            size: 16 * scaleFactor,
+                          ),
                           SizedBox(width: 6 * scaleFactor),
                           Text(
                             _mmss(model.duration),
@@ -347,11 +431,11 @@ class CallCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );

@@ -24,8 +24,7 @@ class LeadSView extends GetView<LeadSController> {
               fontSize: 22,
               fontWeight: FontWeight.bold,
             ),
-          ),
-          
+          ), 
           actions: const [
             Padding(
               padding: EdgeInsets.only(right: 16),
