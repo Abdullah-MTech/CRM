@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 import '../modules/bottomnav/bindings/bottomnav_binding.dart';
 import '../modules/bottomnav/views/bottomnav_view.dart';
+import '../modules/callinterface/bindings/callinterface_binding.dart';
+import '../modules/callinterface/views/callinterface_view.dart';
 import '../modules/calls/bindings/calls_binding.dart';
 import '../modules/calls/views/calls_view.dart';
 import '../modules/forget/bindings/forget_binding.dart';
@@ -104,6 +106,11 @@ class AppPages {
       name: _Paths.RECENT,
       page: () => const RecentView(),
       binding: RecentBinding(),
+    ),
+    GetPage(
+      name: _Paths.CALLINTERFACE,
+      page: () => const CallinterfaceView(),
+      binding: CallinterfaceBinding(),
     ),
   ];
 }
